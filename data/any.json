@@ -1,0 +1,7 @@
+{
+  "name": "John Doe",
+  "age": 30,
+  "occupation": "Software Engineer",
+  "skills": ["JavaScript", "Python", "C++"],
+  "hobbies": ["Reading", "Gaming", "Hiking"]
+}

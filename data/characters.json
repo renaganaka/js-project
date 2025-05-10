@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Spider-Man",
+    "age": 30,
+    "photo": "https://otvet.imgsmail.ru/download/203102805_e290fe18eb06caa2163507c0a3ee3e10_800.jpg"
+  },
+  {
+    "name": "Batman",
+    "age": 28,
+    "photo": "https://art.ngfiles.com/images/607000/607252_7amez_batman-batmetal.png?f1524831940"
+  },
+  {
+    "name": "Superman",
+    "age": 35,
+    "photo": "https://i.ytimg.com/vi/0t8qnDX-zYc/maxresdefault.jpg"
+  },
+  {
+    "name": "Bee",
+    "age": 1,
+    "photo": "https://images.nzgeo.com/2020/12/167_GeoNews_10.jpg"
+  }
+]

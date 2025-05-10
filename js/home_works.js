@@ -90,3 +90,38 @@ startButton.addEventListener("click", startTimer);
 stopButton.addEventListener("click", stopTimer);
 resetButton.addEventListener("click", resetTimer);
 
+const container = document.querySelector('.characters-list');
+
+const Characters = new XMLHttpRequest();
+Characters.open('GET', '../data/characters.json');
+Characters.responseType = 'json';
+
+Characters.onload = function () {
+  const characters = Characters.response;
+
+  characters.forEach(character => {
+    const card = document.createElement('div');
+    card.className = 'character-card';
+    card.innerHTML = `
+      <div class="character-photo">
+        <img src="${character.photo}" alt="${character.name}">
+      </div>
+      <h3>${character.name}</h3>
+      <p>Age: ${character.age}</p>
+    `;
+    container.appendChild(card);
+  });
+};
+
+Characters.send();
+
+
+const xhr = new XMLHttpRequest();
+xhr.open('GET', '../data/any.json');
+xhr.setRequestHeader('Accept', 'application/json'); // например, явно указываем, что ждём JSON
+
+xhr.onload = function () {
+  console.log(xhr.response);
+};
+
+xhr.send();
