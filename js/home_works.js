@@ -118,7 +118,7 @@ Characters.send();
 
 const xhr = new XMLHttpRequest();
 xhr.open('GET', '../data/any.json');
-xhr.setRequestHeader('Accept', 'application/json'); // например, явно указываем, что ждём JSON
+xhr.setRequestHeader('Accept', 'application/json');
 
 xhr.onload = function () {
   console.log(xhr.response);
