@@ -79,6 +79,49 @@ converter(somInput);
 converter(usdInput);
 converter(euroInput);
 
+const cardBlock = document.querySelector('.card');
+const btnNext = document.querySelector('#btn-next');
+const btnPrev = document.querySelector('#btn-prev');
+
+let cardId = 1;
+const maxCardId = 200;
+
+
+function fetchAndRenderCard(id) {
+    fetch(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            const { id, title, completed } = data;
+            cardBlock.innerHTML = `
+        <p>${title}</p>
+        <p style="color: ${completed ? 'green' : 'red'}">${completed}</p>
+        <span>${id}</span>
+      `;
+        });
+}
+
+// Обработчики кнопок
+btnNext.onclick = () => {
+    cardId = cardId >= maxCardId ? 1 : cardId + 1;
+    fetchAndRenderCard(cardId);
+};
+
+btnPrev.onclick = () => {
+    cardId = cardId <= 1 ? maxCardId : cardId - 1;
+    fetchAndRenderCard(cardId);
+};
+
+
+fetchAndRenderCard(cardId);
+
+fetch('https://jsonplaceholder.typicode.com/posts')
+    .then(res => res.json())
+    .then(posts => {
+        console.log('Posts:', posts);
+    });
+
+
+
 
 
 
