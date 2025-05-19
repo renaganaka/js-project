@@ -92,36 +92,50 @@ resetButton.addEventListener("click", resetTimer);
 
 const container = document.querySelector('.characters-list');
 
-const Characters = new XMLHttpRequest();
-Characters.open('GET', '../data/characters.json');
-Characters.responseType = 'json';
 
-Characters.onload = function () {
-  const characters = Characters.response;
-
-  characters.forEach(character => {
-    const card = document.createElement('div');
-    card.className = 'character-card';
-    card.innerHTML = `
-      <div class="character-photo">
-        <img src="${character.photo}" alt="${character.name}">
-      </div>
-      <h3>${character.name}</h3>
-      <p>Age: ${character.age}</p>
-    `;
-    container.appendChild(card);
-  });
-};
-
-Characters.send();
+async function loadCharacters() {
+    try {
+        const response = await fetch('../data/characters.json');
+        const characters = await response.json();
 
 
-const xhr = new XMLHttpRequest();
-xhr.open('GET', '../data/any.json');
-xhr.setRequestHeader('Accept', 'application/json');
+        container.innerHTML = '';
 
-xhr.onload = function () {
-  console.log(xhr.response);
-};
+        characters.forEach(character => {
+            const card = document.createElement('div');
+            card.className = 'character-card';
+            card.innerHTML = `
+                <div class="character-photo">
+                    <img src="${character.photo}" alt="${character.name}">
+                </div>
+                <h3>${character.name}</h3>
+                <p>Age: ${character.age}</p>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке персонажей:', error);
+        container.innerHTML = '<p>Произошла ошибка при загрузке данных</p>';
+    }
+}
 
-xhr.send();
+
+async function loadAnyJson() {
+    try {
+        const response = await fetch('../data/any.json', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Ошибка при загрузке JSON:', error);
+    }
+}
+
+
+(async () => {
+    await loadCharacters();
+    await loadAnyJson();
+})();

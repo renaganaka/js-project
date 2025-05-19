@@ -41,14 +41,10 @@ const usdInput = document.querySelector('#usd');
 const euroInput = document.querySelector('#euro');
 
 const converter = (element) => {
-    element.oninput = () => {
-        const request = new XMLHttpRequest();
-        request.open('GET', '../data/converter.json');
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send();
-
-        request.onload = () => {
-            const data = JSON.parse(request.response);
+    element.oninput = async () => {
+        try {
+            const response = await fetch('../data/converter.json');
+            const data = await response.json();
 
             if (element.value === '') {
                 somInput.value = '';
@@ -71,7 +67,9 @@ const converter = (element) => {
                 somInput.value = (element.value * data.euro).toFixed(2);
                 usdInput.value = ((element.value * data.euro) / data.usd).toFixed(2);
             }
-        };
+        } catch (error) {
+            console.error('Ошибка при конвертации:', error);
+        }
     };
 };
 
@@ -86,40 +84,78 @@ const btnPrev = document.querySelector('#btn-prev');
 let cardId = 1;
 const maxCardId = 200;
 
+async function fetchAndRenderCard(id) {
+    try {
+        const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`);
+        const data = await response.json();
+        const { id: cardId, title, completed } = data;
 
-function fetchAndRenderCard(id) {
-    fetch(`https://jsonplaceholder.typicode.com/todos/${id}`)
-        .then(response => response.json())
-        .then(data => {
-            const { id, title, completed } = data;
-            cardBlock.innerHTML = `
-        <p>${title}</p>
-        <p style="color: ${completed ? 'green' : 'red'}">${completed}</p>
-        <span>${id}</span>
-      `;
-        });
+        cardBlock.innerHTML = `
+            <p>${title}</p>
+            <p style="color: ${completed ? 'green' : 'red'}">${completed}</p>
+            <span>${cardId}</span>
+        `;
+    } catch (error) {
+        console.error('Ошибка при загрузке карточки:', error);
+        cardBlock.innerHTML = '<p>Произошла ошибка при загрузке данных</p>';
+    }
 }
 
-// Обработчики кнопок
-btnNext.onclick = () => {
+
+btnNext.onclick = async () => {
     cardId = cardId >= maxCardId ? 1 : cardId + 1;
-    fetchAndRenderCard(cardId);
+    await fetchAndRenderCard(cardId);
 };
 
-btnPrev.onclick = () => {
+btnPrev.onclick = async () => {
     cardId = cardId <= 1 ? maxCardId : cardId - 1;
-    fetchAndRenderCard(cardId);
+    await fetchAndRenderCard(cardId);
 };
 
 
-fetchAndRenderCard(cardId);
+(async () => {
+    try {
+        await fetchAndRenderCard(cardId);
 
-fetch('https://jsonplaceholder.typicode.com/posts')
-    .then(res => res.json())
-    .then(posts => {
+        const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const posts = await postsResponse.json();
         console.log('Posts:', posts);
-    });
+    } catch (error) {
+        console.error('Ошибка при инициализации:', error);
+    }
+})();
 
+const searchInput = document.querySelector('.cityName');
+const searchButton = document.querySelector('#search');
+const city = document.querySelector('.city');
+const temp = document.querySelector('.temp');
+
+const BASE_API = 'http://api.openweathermap.org/data/2.5/weather';
+const API_KEY = 'e417df62e04d3b1b111abeab19cea714';
+
+searchButton.onclick = async () => {
+    try {
+        if (searchInput.value.trim() !== '') {
+            const response = await fetch(`${BASE_API}?q=${searchInput.value}&units=metric&lang=ru&appid=${API_KEY}`);
+
+            if (!response.ok) {
+                throw new Error('Город не найден');
+            }
+
+            const data = await response.json();
+            city.innerHTML = data.name || 'Город не найден...';
+            temp.innerHTML = `${Math.round(data.main.temp)}°C`;
+            searchInput.value = '';
+        } else {
+            city.innerHTML = 'Введите название города';
+            temp.innerHTML = '';
+        }
+    } catch (e) {
+        console.error('Ошибка:', e);
+        city.innerHTML = 'Произошла ошибка при поиске';
+        temp.innerHTML = '';
+    }
+};
 
 
 
